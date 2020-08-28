@@ -49,6 +49,15 @@ class LogisticRegression_GRAD():
                       
         return result
 
+    
+    
+def acuracia(y_true, y_pred):
+    qtdAcertos = 0
+    for i in range(0, y_true.shape[0]):
+        if y_true[i] == y_pred[i]:
+            qtdAcertos += 1
+
+    return qtdAcertos/y_true.shape[0]
 
 
 
