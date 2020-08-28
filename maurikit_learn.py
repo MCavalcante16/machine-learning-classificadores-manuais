@@ -1,7 +1,12 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm, datasets
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import plot_confusion_matrix as confusion_matrix
 
 class LogisticRegression_GRAD():
     def __init__(self):
+        self._estimator_type = "classifier"
         pass
     
     def fit(self, X, y, epochs=30, learning_rate=0.02):
@@ -58,6 +63,20 @@ def acuracia(y_true, y_pred):
             qtdAcertos += 1
 
     return qtdAcertos/y_true.shape[0]
+
+
+def plot_confusion_matrix(classifier, X_test, y_test, classifier_type="gradient"):
+    class_names = np.unique(y_test)
+    np.set_printoptions(precision=2)
+    title = "Matriz de Confusão"
+    disp = confusion_matrix(classifier, X_test, y_test,
+                                 display_labels=class_names,
+                                 cmap=plt.cm.Blues,
+                                 normalize=None)
+    disp.ax_.set_title(title);
+    print(title)
+    print(disp.confusion_matrix)
+    plt.show()
 
 
 
