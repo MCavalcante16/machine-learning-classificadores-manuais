@@ -54,7 +54,13 @@ class LogisticRegression_GRAD():
                       
         return result
 
+class LogisticRegression_NBA():
+    def __init__(self):
+        self._estimator_type = "classifier"
+        pass
     
+    def fit(self, X, y):
+        
     
 def acuracia(y_true, y_pred):
     qtdAcertos = 0
@@ -65,7 +71,7 @@ def acuracia(y_true, y_pred):
     return qtdAcertos/y_true.shape[0]
 
 
-def plot_confusion_matrix(classifier, X_test, y_test, classifier_type="gradient"):
+def plot_confusion_matrix(classifier, X_test, y_test):
     class_names = np.unique(y_test)
     np.set_printoptions(precision=2)
     title = "Matriz de Confusão"
@@ -79,7 +85,28 @@ def plot_confusion_matrix(classifier, X_test, y_test, classifier_type="gradient"
     plt.show()
 
 
+def plot_boundaries(classifier, X, y):
+    x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    h = 0.02
 
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+    Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    Z = Z.reshape(xx.shape)
+    plt.figure(1, figsize=(4, 3))
+    plt.pcolormesh(xx, yy, Z, cmap=plt.cm.Paired)
+
+    plt.scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', cmap=plt.cm.Paired)
+    plt.xlabel('X1')
+    plt.ylabel('X2')
+
+    plt.xlim(xx.min(), xx.max())
+    plt.ylim(yy.min(), yy.max())
+    plt.xticks(())
+    plt.yticks(())
+
+    plt.show()
 
 
     
