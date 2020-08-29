@@ -54,7 +54,7 @@ class LogisticRegression_GRAD():
                       
         return result
 
-class Classificação_NBG():
+class Classification_NBG():
     def __init__(self):
         self._estimator_type = "classifier"
         pass
@@ -79,6 +79,36 @@ class Classificação_NBG():
             for classe in self.classes:
                 aux = 1 / np.sqrt(np.linalg.det(self.E)) * ((2*np.pi) ** (X.shape[1] / 2))
                 prob_xc = aux * np.exp(-(1.0/2) * np.transpose(x - self.classes_medias[classe]) @ np.linalg.inv(self.E) @ (x - self.classes_medias[classe]))
+                x_result = np.append(x_result, prob_xc * self.classes_probabilidades[classe])
+            melhor_classe = self.classes[np.where(x_result == x_result.max())]
+            result = np.append(result, melhor_classe) 
+        return result
+    
+class Classification_QD():
+    def __init__(self):
+        self._estimator_type = "classifier"
+        pass
+    
+    def fit(self, X, y):
+        self.classes_probabilidades = {}
+        self.classes_medias = {}
+        self.Es = {}
+        self.classes, classes_qtds =  np.unique(y, return_counts=True)
+        
+        for classe, classe_qtd in zip(self.classes, classes_qtds):
+            indices = np.where(y == classe)
+            self.classes_probabilidades[classe] = (classe_qtd / X.shape[0])
+            x = np.array([X[index, :] for index in indices]).reshape(classe_qtd, X.shape[1])
+            self.classes_medias[classe] = x.mean(axis=0)
+            self.Es[classe] = np.cov(x, rowvar=False)
+
+    def predict(self, X):
+        result = np.array([])
+        for x in X:
+            x_result = np.array([])
+            for classe in self.classes:
+                aux = 1 / np.sqrt(np.linalg.det(self.Es[classe])) * ((2*np.pi) ** (X.shape[1] / 2))
+                prob_xc = aux * np.exp(-(1.0/2) * np.transpose(x - self.classes_medias[classe]) @ np.linalg.inv(self.Es[classe]) @ (x - self.classes_medias[classe]))
                 x_result = np.append(x_result, prob_xc * self.classes_probabilidades[classe])
             melhor_classe = self.classes[np.where(x_result == x_result.max())]
             result = np.append(result, melhor_classe) 
